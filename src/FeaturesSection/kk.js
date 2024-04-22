@@ -1,6 +1,5 @@
 import { motion, useInView } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import { FiDollarSign, FiEye, FiPlay, FiSearch } from "react-icons/fi";
 
 const Example = () => {
   return (
@@ -46,9 +45,11 @@ const SlidingFeatureDisplay = ({ featureInView }) => {
     <div
       style={{
         justifyContent:
-          featureInView.contentPosition === "l" ? "flex-end" : "flex-start",
+          featureInView.contentPosition === 
+          "l" ? "flex-end" : "flex-start",
       }}
-      className="pointer-events-none sticky top-0 z-10 hidden h-screen w-full items-center justify-center md:flex"
+      className="pointer-events-none sticky top-0 z-10 hidden 
+      h-screen w-full items-center justify-center md:flex"
     >
       <motion.div
         layout
@@ -139,41 +140,3 @@ const ExampleFeature = ({ featureInView }) => {
 
 export default Example;
 
-const features = [
-  {
-    id: 1,
-    callout: "Get noticed",
-    title: "It's simple",
-    description:
-      "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolor iusto quaerat qui, illo incidunt suscipit fugiat distinctio officia earum eius quae officiis quis harum animi.",
-    contentPosition: "r",
-    Icon: FiEye,
-  },
-  {
-    id: 2,
-    callout: "Find people",
-    title: "They're all here",
-    description:
-      "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolor iusto quaerat qui, illo incidunt suscipit fugiat distinctio officia earum eius quae officiis quis harum animi.",
-    contentPosition: "l",
-    Icon: FiSearch,
-  },
-  {
-    id: 3,
-    callout: "Have fun",
-    title: "Let's party",
-    description:
-      "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolor iusto quaerat qui, illo incidunt suscipit fugiat distinctio officia earum eius quae officiis quis harum animi.",
-    contentPosition: "r",
-    Icon: FiPlay,
-  },
-  {
-    id: 4,
-    callout: "Get paid",
-    title: "Cha-ching!",
-    description:
-      "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolor iusto quaerat qui, illo incidunt suscipit fugiat distinctio officia earum eius quae officiis quis harum animi.",
-    contentPosition: "l",
-    Icon: FiDollarSign,
-  },
-];

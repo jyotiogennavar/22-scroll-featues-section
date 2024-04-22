@@ -38,7 +38,7 @@ const SwapColumnFeatures = () => {
       <SlidingFeatureDisplay featureInView={featureInView} />
 
       {/* Offsets the height of SlidingFeatureDisplay so that it renders on top of Content to start */}
-      <FeaturesContainer/>
+      <FeaturesContainer />
 
       {features.map((s) => (
         <Content
@@ -55,7 +55,9 @@ const SwapColumnFeatures = () => {
 const Container = styled.section`
   position: relative;
   margin: 0 auto;
-  max-width: 80%;
+  max-width: 82%;
+
+  background-color:  rgba(255, 224, 218, 1) 47%;
 
   font-family: "Inter", sans-serif;
 `;
@@ -71,7 +73,13 @@ const FeaturesContainer = styled.div`
 
 const SlidingFeatureDisplay = ({ featureInView }) => {
   return (
-    <SlidingFeatureContainer>
+    <SlidingFeatureContainer 
+    style={{
+      justifyContent:
+        featureInView.contentPosition === 
+        "l" ? "flex-end" : "flex-start",
+    }}
+    contentPosition={featureInView.contentPosition}>
       <MotionContainer
         layout
         transition={{
@@ -84,8 +92,6 @@ const SlidingFeatureDisplay = ({ featureInView }) => {
       </MotionContainer>
     </SlidingFeatureContainer>
   );
-
-
 };
 
 const SlidingFeatureContainer = styled.div`
@@ -96,60 +102,60 @@ const SlidingFeatureContainer = styled.div`
   height: 100vh;
   width: 100%;
   align-items: center;
-  justify-content: ${({ contentPosition }) =>
-    contentPosition === "l" ? "flex-end" : "flex-start"};
+  pointer-events: none;
 
   @media (min-width: 48rem) {
     display: flex;
   }
-  `;
-
+`;
 
 const MotionContainer = styled(motion.div)`
-  display: flex;
-  height: fit-content;
   width: 60%;
   border-radius: 1rem;
   padding: 2rem;
 `;
 
 const Content = ({ setFeatureInView, featureInView }) => {
-
   const ref = useRef(null);
   const isInView = useInView(ref, {
-    rootMargin: "-150px 0px",
+    margin: "-150px",
   });
 
   useEffect(() => {
     if (isInView) {
       setFeatureInView(featureInView);
     }
-  }, [isInView]);
+  }, [isInView, setFeatureInView, featureInView]);
 
   return (
     <StyledSection contentPosition={featureInView.contentPosition} ref={ref}>
-    <StyledGrid>
-      <StyledMotionDiv
-        initial={{ opacity: 0, y: 25 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: "easeInOut" }}
-      >
-        <StyledSpan>{featureInView.callout}</StyledSpan>
-        <StyledTitle>{featureInView.title}</StyledTitle>
-        <StyledDescription>{featureInView.description}</StyledDescription>
-      </StyledMotionDiv>
-      <StyledMotionDiv
-        initial={{ opacity: 0, y: 25 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: "easeInOut" }}
-        className="mt-8 block md:hidden"
-      >
-        <ExampleFeature featureInView={featureInView} />
-      </StyledMotionDiv>
-    </StyledGrid>
-  </StyledSection>
-  )
-}
+      <StyledGrid>
+        <StyledMotionDiv
+          initial={{ opacity: 0, y: 25 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeInOut" }}
+        >
+          <StyledTitle>{featureInView.title}</StyledTitle>
+          <StyledDescription>{featureInView.description}</StyledDescription>
+        </StyledMotionDiv>
+        <StyledMotionBlock
+          initial={{ opacity: 0, y: 25 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeInOut" }}
+        ></StyledMotionBlock>
+      </StyledGrid>
+    </StyledSection>
+  );
+};
+
+const StyledMotionBlock = styled(motion.div)`
+  margin-top: 2rem;
+  display: block;
+
+  @media (min-width: 768px) {
+    display: none;
+  }
+`;
 
 const StyledSection = styled.section`
   position: relative;
@@ -157,8 +163,7 @@ const StyledSection = styled.section`
   display: flex;
   justify-content: ${({ contentPosition }) =>
     contentPosition === "l" ? "flex-start" : "flex-end"};
-  height: fit-content;
-  
+
   @media (min-width: 48rem) {
     height: 100vh;
   }
@@ -169,11 +174,10 @@ const StyledGrid = styled.div`
   height: 100%;
   width: 100%;
   place-content: center;
-  padding: 4rem; 
-  
+  padding: 5rem;
+
   @media (min-width: 48rem) {
-    width: 40%; 
-    padding: 4rem 8rem; 
+    width: 43%;
   }
 `;
 
@@ -182,19 +186,11 @@ const StyledMotionDiv = styled(motion.div)`
   transform: translateY(25px);
 `;
 
-const StyledSpan = styled.span`
-  border-radius: 9999px;
-  background-color: #4f46e5; 
-  padding: 0.25rem 0.5rem;
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: #fff; 
-`;
-
 const StyledTitle = styled.p`
+ font-family: "Roboto Slab", serif;
   margin-top: 0.75rem;
   font-size: 3rem;
-  font-weight: 700; 
+  font-weight: 700;
 `;
 
 const StyledDescription = styled.p`
@@ -202,98 +198,47 @@ const StyledDescription = styled.p`
 `;
 
 const ExampleFeature = ({ featureInView }) => {
-  return (
-    <StyledDiv>
-    <StyledFlex>
-      <StyledCircle style={{ backgroundColor: '#f56565' }} /> 
-      <StyledCircle style={{ backgroundColor: '#f6e05e' }} /> 
-      <StyledCircle style={{ backgroundColor: '#48bb78' }} /> 
-    </StyledFlex>
-    <div style={{ padding: '0.5rem' }}> 
-      <StyledP>
-        <StyledSpanOne>~</StyledSpanOne> Show a part of your product that explains what
-        <StyledInlineBlock>"{featureInView.title}"</StyledInlineBlock> means.
-      </StyledP>
-    </div>
-  </StyledDiv>
-  )
-}
+  return <StyledDiv></StyledDiv>;
+};
 
 const StyledDiv = styled.div`
   position: relative;
-  height: 24rem; 
+  height: 24rem;
   width: 100%;
   border-radius: 1rem;
-  background-color: #4a5568; 
-  box-shadow: 0 0 24px 0 rgba(0,0,0,0.1); 
+  background-image: url(https://images.pexels.com/photos/6767772/pexels-photo-6767772.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1);
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 0 24px 0 rgba(0, 0, 0, 0.1);
 `;
-
-const StyledFlex = styled.div`
-  display: flex;
-  width: 100%;
-  gap: 0.375rem; 
-  border-top-left-radius: 1rem;
-  border-top-right-radius: 1rem; 
-  background-color: #2d3748; 
-  padding: 0.75rem;
-`;
-
-const StyledCircle = styled.div`
-  height: 0.75rem; 
-  width: 0.75rem; 
-  border-radius: 50%;
-`;
-
-const StyledP = styled.p`
-  font-family: monospace; 
-  font-size: 0.875rem; 
-  color: #a0aec0; 
-`;
-
-const StyledSpanOne = styled.span`
-  color: #48bb78; 
-`;
-
-const StyledInlineBlock = styled.span`
-  display: inline-block;
-  border-radius: 0.25rem; 
-  background-color: #6b46c1;
-  padding: 0.25rem 0.5rem;
-  font-weight: 600; 
-`;
-
 
 const features = [
   {
     id: 1,
-    callout: "Get noticed",
-    title: "It's simple",
+    title: "🌿 Natural",
     description:
-      "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolor iusto quaerat qui, illo incidunt suscipit fugiat distinctio officia earum eius quae officiis quis harum animi.",
+      "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolor iusto quaerat qui",
     contentPosition: "r",
   },
   {
     id: 2,
-    callout: "Find people",
-    title: "They're all here",
+    title: "✨ Effective",
     description:
-      "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolor iusto quaerat qui, illo incidunt suscipit fugiat distinctio officia earum eius quae officiis quis harum animi.",
+      "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolor iusto quaerat qui",
     contentPosition: "l",
   },
   {
     id: 3,
-    callout: "Have fun",
-    title: "Let's party",
+    title: "🐰 Cruelty Free",
     description:
-      "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolor iusto quaerat qui, illo incidunt suscipit fugiat distinctio officia earum eius quae officiis quis harum animi.",
+      "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolor iusto quaerat qui",
     contentPosition: "r",
   },
   {
     id: 4,
-    callout: "Get paid",
-    title: "Cha-ching!",
+    title: "🌱 Vegan",
     description:
-      "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolor iusto quaerat qui, illo incidunt suscipit fugiat distinctio officia earum eius quae officiis quis harum animi.",
+      "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolor iusto quaerat qui",
     contentPosition: "l",
   },
 ];
